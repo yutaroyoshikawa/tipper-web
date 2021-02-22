@@ -1,5 +1,6 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import styled from "styled-components";
+import dayjs from "dayjs";
 
 type PerformanceCardProps = {
   thumbnailSrc: string;
@@ -15,18 +16,26 @@ const PerformanceCard: FC<PerformanceCardProps> = ({
   start,
   finish,
   locate,
-}) => (
-  <div className="wrap">
-    <figure>
-      <img src={thumbnailSrc} alt={name} />
-    </figure>
-    <p>{name}</p>
-    <time>
-      {start.getTime()} - {finish.getTime()}
-    </time>
-    <p>{locate}</p>
-  </div>
-);
+}) => {
+  const startDate = useMemo(() => dayjs(start).format("YYYY/MM/DD HH:mm"), [
+    start,
+  ]);
+
+  const finishTime = useMemo(() => dayjs(finish).format("HH:mm"), [finish]);
+
+  return (
+    <div className="wrap">
+      <figure>
+        <img src={thumbnailSrc} alt={name} />
+      </figure>
+      <p>{name}</p>
+      <time>
+        {startDate} - {finishTime}
+      </time>
+      <p>{locate}</p>
+    </div>
+  );
+};
 
 export default styled(PerformanceCard)`
   .wrap {
