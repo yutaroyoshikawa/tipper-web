@@ -1,0 +1,13 @@
+overwrite: true
+schema: "https://tipper-303209.uc.r.appspot.com/graphql"
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      withHooks: true
+  src/generated/graphql.schema.json:
+    plugins:
+      - "introspection"
