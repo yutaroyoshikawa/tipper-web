@@ -1,34 +1,36 @@
 import {
   ApolloClient,
   HttpLink,
+  HttpOptions,
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
 
-let apolloClient: ApolloClient<NormalizedCacheObject>;
-
-const createApolloClient = (): ApolloClient<NormalizedCacheObject> =>
+const createApolloClient = (
+  link: HttpOptions
+): ApolloClient<NormalizedCacheObject> =>
   new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: new HttpLink({
-      uri: process.env.GRAPHQL_ENDPOINT ?? "",
-    }),
+    link: new HttpLink(link),
     cache: new InMemoryCache(),
   });
 
 export const initializeApollo = (
-  initialState?: NormalizedCacheObject
+  initialState?: NormalizedCacheObject,
+  authToken?: string
 ): ApolloClient<NormalizedCacheObject> => {
-  const apolloClientTmp = apolloClient ?? createApolloClient();
+  const client = createApolloClient({
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT ?? "",
+    headers: {
+      Authorization: authToken ? `Bearer ${authToken}` : "",
+    },
+  });
 
   if (initialState) {
-    const existingCache = apolloClientTmp.extract();
-    apolloClientTmp.cache.restore({ ...existingCache, ...initialState });
+    const existingCache = client.extract();
+
+    client.cache.restore({ ...existingCache, ...initialState });
   }
 
-  if (typeof window === "undefined") {
-    apolloClient = apolloClientTmp;
-  }
-
-  return apolloClientTmp;
+  return client;
 };
