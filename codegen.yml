@@ -2,6 +2,7 @@ overwrite: true
 schema: "https://tipper-303209.uc.r.appspot.com/graphql"
 generates:
   src/generated/graphql.tsx:
+    documents: "./src/queries/*.ts"
     plugins:
       - "typescript"
       - "typescript-operations"
