@@ -8,7 +8,7 @@
     "type-check": "tsc",
     "lint": "eslint -c .eslintrc.json --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "eslint -c .eslintrc.json --ext .js,.jsx,.ts,.tsx --fix .",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "SCHEMA_PATH=https://raw.githubusercontent.com/yutaroyoshikawa/tipper-api/master/graph/schema.graphql npx graphql-codegen --config codegen.yml -r dotenv/config"
   },
   "dependencies": {
     "@apollo/client": "^3.3.11",
