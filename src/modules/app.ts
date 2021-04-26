@@ -1,18 +1,32 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type AppState = {
-  authToken?: string;
+type LoginUser = {
+  displayName: string | null;
+  email: string | null;
+  emailVerified: boolean;
+  phoneNumber: string | null;
+  photoURL: string | null;
+  uid: string;
+  claims: {
+    [key: string]: any;
+  };
 };
 
-export const appInitialState: AppState = {};
+type AppState = {
+  loginUser?: LoginUser;
+};
+
+export const appInitialState: AppState = {
+  loginUser: undefined,
+};
 
 export const appSlice = createSlice({
   name: "app",
   initialState: appInitialState,
   reducers: {
-    setAuthToken: (state, action: PayloadAction<string>) => ({
+    setLoginUser: (state, action: PayloadAction<LoginUser | undefined>) => ({
       ...state,
-      authToken: action.payload,
+      loginUser: action.payload,
     }),
   },
 });

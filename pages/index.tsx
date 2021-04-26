@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NextPage, GetServerSideProps } from "next";
 import { useSelector } from "react-redux";
 import { StoreState } from "../src/modules/store";
@@ -11,11 +11,11 @@ import { getAuthToken } from "../src/utils/authToken";
 import { createIsomophicApiClient } from "../src/utils/isomophicApi";
 
 type Props = {
-  performance?: GetPerformanceQuery;
+  performance: GetPerformanceQuery | null;
 };
 
 const IndexPage: NextPage<Props> = ({ performance }) => {
-  const authToken = useSelector((store: StoreState) => store.app.authToken);
+  const loginUser = useSelector((store: StoreState) => store.app.loginUser);
   const [
     getPerformance,
     { called, loading, error, data },
@@ -25,11 +25,11 @@ const IndexPage: NextPage<Props> = ({ performance }) => {
     },
   });
 
-  React.useEffect(() => {
-    if (authToken && !performance) {
+  useEffect(() => {
+    if (loginUser && !performance) {
       getPerformance();
     }
-  }, [authToken, getPerformance, performance]);
+  }, [loginUser, getPerformance, performance]);
 
   return (
     <>
@@ -47,17 +47,26 @@ const IndexPage: NextPage<Props> = ({ performance }) => {
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const authToken = getAuthToken(ctx);
-  const { data } = await createIsomophicApiClient(authToken)
-    .query<GetPerformanceQuery>(GetPerformanceDocument, {
-      performanceId: "hoge",
-    })
-    .toPromise();
+  try {
+    const { data } = await createIsomophicApiClient(authToken)
+      .query<GetPerformanceQuery>(GetPerformanceDocument, {
+        performanceId: "Q9jXgHQYdAsgGTbK8B7K2",
+      })
+      .toPromise();
 
-  return {
-    props: {
-      performance: data,
-    },
-  };
+    return {
+      props: {
+        performance: data ?? null,
+      },
+    };
+  } catch (error) {
+    console.log("🦑");
+    return {
+      props: {
+        performance: null,
+      },
+    };
+  }
 };
 
 export default IndexPage;

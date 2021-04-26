@@ -5,6 +5,20 @@ export const GET_PERFORMANCE = gql`
     performance(id: $performanceId) {
       id
       name
+      discription
+      start
+      finish
+      thumbnail
+      location {
+        lat
+        lng
+      }
+      address
+      artist {
+        id
+        name
+        imageIcon
+      }
     }
   }
 `;
